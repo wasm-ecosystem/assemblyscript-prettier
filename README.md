@@ -17,7 +17,6 @@ add plugin in prettier config. For example `.prettierrc`
 
 ```json
 {
-  "pluginSearchDirs": ["node_modules"],
   "plugins": ["assemblyscript-prettier"]
 }
 ```
