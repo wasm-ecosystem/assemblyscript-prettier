@@ -1,50 +1,41 @@
-import assemblyscript from "assemblyscript";
-
 export const magic = "MAGIC_ASSEMBLYSCRIPT_PRETTIER_1996";
 const prefix = "/*" + magic;
 const postfix = magic + "*/";
-const NodeKind = assemblyscript.NodeKind;
 
-function visitDecorators(node) {
-  let list = [];
-  let _visit = (_node) => {
-    switch (_node.kind) {
-      case NodeKind.Source: {
-        _node.statements.forEach((statement) => {
-          _visit(statement);
-        });
-        break;
+export async function preProcess(code) {
+  const assemblyscript = await import("assemblyscript");
+  const NodeKind = assemblyscript.NodeKind;
+  const visitDecorators = (node) => {
+    let list = [];
+    let _visit = (_node) => {
+      switch (_node.kind) {
+        case NodeKind.Source: {
+          _node.statements.forEach((statement) => {
+            _visit(statement);
+          });
+          break;
+        }
+        case NodeKind.ClassDeclaration:
+        case NodeKind.InterfaceDeclaration:
+        case NodeKind.NamespaceDeclaration: {
+          _node.members.forEach((statement) => {
+            _visit(statement);
+          });
+          break;
+        }
       }
-      case NodeKind.ClassDeclaration:
-      case NodeKind.InterfaceDeclaration:
-      case NodeKind.NamespaceDeclaration: {
-        _node.members.forEach((statement) => {
-          _visit(statement);
-        });
-        break;
+      if (_node.decorators) {
+        list.push(
+          ..._node.decorators.map((decorator) => {
+            return { start: decorator.range.start, end: decorator.range.end };
+          })
+        );
       }
-    }
-    if (_node.decorators) {
-      list.push(
-        ..._node.decorators.map((decorator) => {
-          return {
-            start: decorator.range.start,
-            end: decorator.range.end,
-          };
-        })
-      );
-    }
+    };
+    _visit(node);
+    return list;
   };
-  _visit(node);
-  return list;
-}
 
-/**
- *
- * @param {string} code
- * @returns {string}
- */
-export function preProcess(code) {
   let parser = new assemblyscript.Parser();
   parser.parseFile(code, "pre_process.ts", false);
   let source = parser.sources[0];
