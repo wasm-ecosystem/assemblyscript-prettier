@@ -5,6 +5,9 @@ on:
     tags:
       - "*"
 
+permissions:
+  id-token: write # Required for OIDC
+
 jobs:
   publish:
     runs-on: ubuntu-latest
