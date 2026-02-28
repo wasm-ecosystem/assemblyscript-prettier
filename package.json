@@ -27,10 +27,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/HerrCai0907/assemblyscript-prettier.git"
+    "url": "https://github.com/wasm-ecosystem/assemblyscript-prettier.git"
   },
   "bugs": {
-    "url": "https://github.com/HerrCai0907/assemblyscript-prettier/issues"
+    "url": "https://github.com/wasm-ecosystem/assemblyscript-prettier/issues"
   },
   "peerDependencies": {
     "prettier": "^3.0.0"
