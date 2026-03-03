@@ -3,6 +3,13 @@ const prefix = "/*" + magic;
 const postfix = magic + "*/";
 
 export async function preProcess(code) {
+  globalThis.WebAssembly.instantiateStreaming =
+    globalThis.WebAssembly.instantiateStreaming ??
+    (async (source, importObject) => {
+      const response = await Promise.resolve(source);
+      const buffer = await response.arrayBuffer();
+      return WebAssembly.instantiate(buffer, importObject);
+    });
   const assemblyscript = await import("assemblyscript");
   const NodeKind = assemblyscript.NodeKind;
   const visitDecorators = (node) => {
